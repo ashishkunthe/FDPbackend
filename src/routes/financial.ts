@@ -17,7 +17,7 @@ route.post("/records", authMiddleware as any, async (req, res) => {
   const role = request.role;
 
   if (role !== "ADMIN") {
-    res.json({
+    res.status(403).json({
       message: "Access denied only admin can performe this action",
     });
     return;
@@ -27,7 +27,7 @@ route.post("/records", authMiddleware as any, async (req, res) => {
     const inputs = financialInputs.safeParse(req.body);
 
     if (!inputs.success) {
-      res.json({
+      res.status(400).json({
         message: "Invalid inputs",
       });
       return;
@@ -51,13 +51,13 @@ route.post("/records", authMiddleware as any, async (req, res) => {
       return;
     }
 
-    res.json({
+    res.status(201).json({
       message: "Record created successfully",
       id: record._id,
     });
   } catch (error) {
     console.log("Error in creating records", error);
-    res.json({
+    res.status(500).json({
       message: "Something went wrong",
     });
   }
@@ -71,20 +71,20 @@ route.get("/records", authMiddleware as any, async (req, res) => {
     const records = await Finance.find();
 
     if (records.length === 0) {
-      res.json({
+      res.status(404).json({
         message: "No records created by Admin",
       });
       return;
     }
 
-    res.json({
+    res.status(200).json({
       message: "The records are here",
       role: role,
       records: records,
     });
   } catch (error) {
     console.log("Error in getting records", error);
-    res.json({
+    res.status(500).json({
       message: "Something went wrong",
     });
   }
@@ -95,20 +95,19 @@ route.patch("/records/:id", authMiddleware as any, async (req, res) => {
   const request = req as RequestExtended;
 
   const inputs = financialInputs.safeParse(req.body);
-  const userId = request.userId;
   const role = request.role;
 
   const { id } = req.params;
 
   if (role !== "ADMIN") {
-    res.json({
+    res.status(403).json({
       message: "Access denied only admin can performe this action",
     });
     return;
   }
 
   if (!inputs.success) {
-    res.json({
+    res.status(400).json({
       message: "Invalid inputs",
     });
     return;
@@ -129,19 +128,19 @@ route.patch("/records/:id", authMiddleware as any, async (req, res) => {
     );
 
     if (!record) {
-      res.json({
+      res.status(404).json({
         message: "record not found",
       });
       return;
     }
 
-    res.json({
+    res.status(200).json({
       message: "Updated suceefully",
       record: record,
     });
   } catch (error) {
     console.log("Error in updating record");
-    res.json({
+    res.status(500).json({
       message: "something went wrong",
     });
   }
@@ -155,7 +154,7 @@ route.delete("/records/:id", authMiddleware as any, async (req, res) => {
   const role = request.role;
 
   if (role !== "ADMIN") {
-    res.json({
+    res.status(403).json({
       message: "Access denied only admin can performe this action",
     });
     return;
@@ -165,20 +164,21 @@ route.delete("/records/:id", authMiddleware as any, async (req, res) => {
     const record = await Finance.findByIdAndDelete(id);
 
     if (!record) {
-      res.json({
+      res.status(404).json({
         message: "Rcord with the id not found",
       });
       return;
     }
 
-    res.json({
+    res.status(200).json({
       message: "Record deleted",
     });
   } catch (error) {
     console.log("Error in deleting the record");
-    res.json({
+    res.status(500).json({
       message: "Something went wrong",
     });
   }
 });
+
 export default route;

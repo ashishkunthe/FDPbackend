@@ -9,7 +9,7 @@ route.get("/dashboard/summary", authMiddleware as any, async (req, res) => {
     const financialReport = await Finance.find();
 
     if (financialReport.length === 0) {
-      res.json({
+      res.status(404).json({
         message: "No report created yet",
       });
       return;
@@ -26,7 +26,7 @@ route.get("/dashboard/summary", authMiddleware as any, async (req, res) => {
       }
     }
 
-    res.json({
+    res.status(200).json({
       message: "Here is the summary of report",
       totalExpense: totalExpense,
       totalIncome: totalIncome,
@@ -34,7 +34,7 @@ route.get("/dashboard/summary", authMiddleware as any, async (req, res) => {
     });
   } catch (error) {
     console.log("Error in getting dashboard summary ");
-    res.json({
+    res.status(500).json({
       message: "Something went wrong",
     });
   }

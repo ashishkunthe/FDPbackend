@@ -14,7 +14,7 @@ route.get("/users", authMiddleware as any, async (req, res) => {
   const role = request.role;
 
   if (role !== "ADMIN") {
-    res.json({
+    res.status(403).json({
       message: "Access denied only admin can performe this action",
     });
     return;
@@ -24,13 +24,13 @@ route.get("/users", authMiddleware as any, async (req, res) => {
     const users = await User.find();
     console.log(users);
 
-    res.json({
+    res.status(200).json({
       message: "users fetched sucessfully",
       users: users,
     });
   } catch (error) {
     console.log("error in fetching users");
-    res.json({
+    res.status(500).json({
       message: "Something went wrong",
     });
   }
@@ -44,7 +44,7 @@ route.get("/users/:id", authMiddleware as any, async (req, res) => {
   const role = request.role;
 
   if (role !== "ADMIN") {
-    res.json({
+    res.status(403).json({
       message: "Access denied only admin can performe this action",
     });
     return;
@@ -54,12 +54,12 @@ route.get("/users/:id", authMiddleware as any, async (req, res) => {
     const user = await User.findById(id);
 
     if (!user) {
-      res.json({
+      res.status(404).json({
         message: "User not found",
       });
       return;
     } else {
-      res.json({
+      res.status(200).json({
         message: "User details found",
         user: user,
       });
@@ -82,14 +82,14 @@ route.patch("/users/:id/role", authMiddleware as any, async (req, res) => {
   const role = request.role;
 
   if (role !== "ADMIN") {
-    res.json({
+    res.status(403).json({
       message: "Access denied only admin can performe this action",
     });
     return;
   }
   try {
     if (!roleArr.includes(changedrole)) {
-      res.json({
+      res.status(400).json({
         message: "Invalid role",
       });
       return;
@@ -98,18 +98,18 @@ route.patch("/users/:id/role", authMiddleware as any, async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(id, { role: changedrole });
 
     if (!updatedUser) {
-      res.json({
+      res.status(404).json({
         message: "User not found",
       });
       return;
     }
 
-    res.json({
+    res.status(200).json({
       message: "User role updated successfully",
     });
   } catch (error) {
     console.log("error in updating role by admin", error);
-    res.json({
+    res.status(500).json({
       message: "Something went wrong",
     });
   }

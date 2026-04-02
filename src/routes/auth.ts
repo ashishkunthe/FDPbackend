@@ -10,7 +10,7 @@ route.post("/register", async (req, res) => {
   const inputs = registerType.safeParse(req.body);
 
   if (!inputs.success) {
-    res.json({
+    res.status(400).json({
       message: "Invalid inputs",
     });
     return;
@@ -20,7 +20,7 @@ route.post("/register", async (req, res) => {
     const userFound = await User.findOne({ email });
 
     if (userFound) {
-      res.json({
+      res.status(409).json({
         message: "The user already registered pls login",
       });
       return;
@@ -39,13 +39,13 @@ route.post("/register", async (req, res) => {
       process.env.JWT_SECRET as string
     );
 
-    res.json({
+    res.status(200).json({
       message: "user registered succesful",
       token: token,
     });
   } catch (error) {
     console.log("error in user registrations", error);
-    res.json({
+    res.status(500).json({
       message: "Something went wrong",
     });
   }
@@ -55,7 +55,7 @@ route.post("/login", async (req, res) => {
   const inputs = loginType.safeParse(req.body);
 
   if (!inputs.success) {
-    res.json({
+    res.status(400).json({
       message: "Invalid inputs",
     });
     return;
@@ -65,7 +65,7 @@ route.post("/login", async (req, res) => {
     const findUser = await User.findOne({ email });
 
     if (!findUser) {
-      res.json({
+      res.status(404).json({
         message: "User not registered",
       });
       return;
@@ -74,7 +74,7 @@ route.post("/login", async (req, res) => {
     const decode = await bcrypt.compare(password, findUser.password);
 
     if (!decode) {
-      res.json({
+      res.status(401).json({
         message: "Invalid credentials",
       });
       return;
@@ -85,13 +85,13 @@ route.post("/login", async (req, res) => {
       process.env.JWT_SECRET as string
     );
 
-    res.json({
+    res.status(200).json({
       message: "Login sucessful",
       token: token,
     });
   } catch (error) {
     console.log("error in user login", error);
-    res.json({
+    res.status(500).json({
       message: "something went wrong",
     });
   }
