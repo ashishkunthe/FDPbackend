@@ -45,7 +45,7 @@ route.post("/records", authMiddleware as any, async (req, res) => {
     });
 
     if (!record) {
-      res.json({
+      res.status(500).json({
         message: "Record not created try again",
       });
       return;
@@ -66,6 +66,13 @@ route.post("/records", authMiddleware as any, async (req, res) => {
 route.get("/records", authMiddleware as any, async (req, res) => {
   const request = req as RequestExtended;
   const role = request.role;
+
+  if (role === "VIEWER") {
+    res.status(403).json({
+      message: "Access denied only admin and analyst can performe this action",
+    });
+    return;
+  }
 
   try {
     const records = await Finance.find();
