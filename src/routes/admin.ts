@@ -82,7 +82,7 @@ route.patch("/users/:id/role", authMiddleware as any, async (req, res) => {
   const { id } = req.params;
   const { changedrole, status } = req.body;
 
-  const roleArr = ["ANALYST", "ADMIN"];
+  const roleArr = ["ANALYST", "ADMIN", "VIEWER"];
   // @ts-ignore
   const request = req as RequestExtend;
   const role = request.role;
