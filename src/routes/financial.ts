@@ -131,7 +131,7 @@ route.patch("/records/:id", authMiddleware as any, async (req, res) => {
         notes,
         type,
       },
-      { new: true }
+      { returnDocument: "after" }
     );
 
     if (!record) {

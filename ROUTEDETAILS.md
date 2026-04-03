@@ -70,7 +70,8 @@ PATCH /users/:id/role
 
 ```json
 {
-  "changedrole": "ANALYST"
+  "changedrole": "ANALYST",
+  "status": "ACTIVE"
 }
 ```
 

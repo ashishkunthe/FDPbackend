@@ -22,7 +22,13 @@ route.get("/users", authMiddleware as any, async (req, res) => {
 
   try {
     const users = await User.find();
-    console.log(users);
+
+    if (!users) {
+      res.json({
+        message: "no users are presents",
+      });
+      return;
+    }
 
     res.status(200).json({
       message: "users fetched sucessfully",
@@ -74,7 +80,7 @@ route.get("/users/:id", authMiddleware as any, async (req, res) => {
 
 route.patch("/users/:id/role", authMiddleware as any, async (req, res) => {
   const { id } = req.params;
-  const { changedrole } = req.body;
+  const { changedrole, status } = req.body;
 
   const roleArr = ["ANALYST", "ADMIN"];
   // @ts-ignore
@@ -95,7 +101,10 @@ route.patch("/users/:id/role", authMiddleware as any, async (req, res) => {
       return;
     }
 
-    const updatedUser = await User.findByIdAndUpdate(id, { role: changedrole });
+    const updatedUser = await User.findByIdAndUpdate(id, {
+      role: changedrole,
+      status: status ? status : "ACTIVE",
+    });
 
     if (!updatedUser) {
       res.status(404).json({

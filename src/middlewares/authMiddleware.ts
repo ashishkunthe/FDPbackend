@@ -34,6 +34,7 @@ export function authMiddleware(
 
     req.userId = decode.userId;
     req.role = decode.role;
+    next();
   } catch (error) {
     console.log("error in middleware", error);
     res.json({
