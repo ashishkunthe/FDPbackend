@@ -5,6 +5,9 @@ import { Finance } from "../models/Financial";
 const route = Router();
 
 route.get("/dashboard/summary", authMiddleware as any, async (req, res) => {
+  // @ts-ignore
+  const role = req.role;
+
   try {
     const financialReport = await Finance.find();
 
@@ -31,6 +34,7 @@ route.get("/dashboard/summary", authMiddleware as any, async (req, res) => {
       totalExpense: totalExpense,
       totalIncome: totalIncome,
       netBalance: totalIncome - totalExpense,
+      role: role,
     });
   } catch (error) {
     console.log("Error in getting dashboard summary ");
